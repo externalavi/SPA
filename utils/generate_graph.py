@@ -4,15 +4,17 @@
 # An erods-renyi graph on the vertex V is a random graph which connects each
 # pair of nodes {i,j} with probablity p, independent.
 
-# importing
 import networkx as nx
+
+from utils.energy_altitude import AltitudeGain, ExpectedEnergy, UncertaintyPenalty
 
 # graph generator
 
 
-def generate_graph(n, p):  # node sizes, edge probablity input parameters
+# node sizes, edge probablity input parameters
+def generate_graph(n, p, seed=None, with_metrics=True):
     # generates random graph using erdos-renyi model
-    G = nx.erdos_renyi_graph(n, p, directed=True)
+    G = nx.erdos_renyi_graph(n, p, seed=seed, directed=True)
     # edges having direction in the generated graph
 
     if not nx.is_strongly_connected(G):  # connectivity check
@@ -40,5 +42,11 @@ def generate_graph(n, p):  # node sizes, edge probablity input parameters
         # 0 -> 1
         # 1 -> 2
         # node 3 is removed
-    return G
 
+    if with_metrics:
+        for u, v in G.edges():
+            G[u][v]["expected_energy"] = ExpectedEnergy(u, v)
+            G[u][v]["altitude_gain"] = AltitudeGain(u, v)
+            G[u][v]["uncertainty"] = UncertaintyPenalty(u, v)
+
+    return G
