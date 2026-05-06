@@ -5,7 +5,7 @@ from random import Random
 import networkx as nx
 import numpy as np
 
-from Greedy_SOSP_2 import Greedy_SOSP_Update
+from Greedy_SOSP_2 import Greedy_SOSP
 from utils.energy_altitude import DroneEdgeCost, ExpectedEnergy, UncertaintyPenalty
 
 
@@ -52,7 +52,7 @@ def _edge_union_from_trees(trees, fallback_edges):
     return edges or set(fallback_edges)
 
 
-def Robust_MOSP_Update(
+def Robust_MOSP(
     G,
     S=None,
     T_list=None,
@@ -97,7 +97,7 @@ def Robust_MOSP_Update(
     scenario_trees = []
     scenario_distances = []
     for scenario, tree in zip(S, T_list):
-        energy, parent, updated_tree = Greedy_SOSP_Update(
+        energy, parent, updated_tree = Greedy_SOSP(
             G,
             T=tree,
             Ins=Ins,
@@ -169,3 +169,18 @@ def Robust_MOSP_Update(
         "scenario_trees": scenario_trees,
         "scenario_distances": scenario_distances,
     }
+
+
+"""
+'Robust_MOSP' uses a set of 'uncertainity(wind)' to find path from 'source' to 'target'
+that is robust across the multiple possible conditions.
+
+It returns
+1. path: the selected route as a node list from 'source' to 'target'
+2. robust_cost: the sum of robustness-weighted edge costs along that path
+3. robust_graph: a condensed directed graph built from candidate edges with robustness statistics
+4. scenario_trees: one SOSP tree per scenario
+5. scenario_distances: one energy-distance dictionary per scenario
+
+
+"""
