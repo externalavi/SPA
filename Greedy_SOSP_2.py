@@ -81,7 +81,7 @@ def _build_tree(G, energy, parent):
     return T
 
 
-def Greedy_SOSP_Update(
+def Greedy_SOSP(
     G,
     T=None,
     Ins=None,
@@ -150,3 +150,25 @@ def Greedy_SOSP_Update(
     if return_tree:
         return energy, parent, _build_tree(G, energy, parent)
     return energy, parent
+
+
+"""
+"Greedy_SOSP function" finds out an energy-feasible single-source shortest path tree (SOSP)
+over a directed graph "G", using a drone specific cost model.
+
+It returns 
+"energy": a dictionary mapping each node v to the minimum estimated energy 
+required to each v from the soruce. 
+
+"parent": a dictionary mapping each node v to its predecessor u on the choosen lowest-energy
+route from the source. 
+
+So technically 
+'energy[v]' is the best known cumulative cost to reach 'v' from 'source'
+'parent[v]' tells about the previous node on that route.
+
+Together 'energy' & 'parent' define a tree rooted at 'source'
+1. The tree contains the best energy-feasible path from the source to every reachable nodes
+2. Subject to battery feasiability check
+
+"""
